@@ -1559,7 +1559,7 @@
 /* Keep each scene in its own stacking context. Only editorial sheets pin as a whole. */
 @media (prefers-reduced-motion: no-preference) {
   .shreshta-landing {
-    --section-overlap: clamp(26px, 9svh, 84px);
+    --section-overlap: clamp(72px, 18svh, 180px);
   }
 
   .shreshta-landing.has-overlaps main {
@@ -1584,7 +1584,7 @@
 
 @media (max-width: 719px) and (prefers-reduced-motion: no-preference) {
   .shreshta-landing {
-    --section-overlap: clamp(14px, 5svh, 40px);
+    --section-overlap: clamp(48px, 14svh, 120px);
   }
 
   .shreshta-landing.has-overlaps main > section {

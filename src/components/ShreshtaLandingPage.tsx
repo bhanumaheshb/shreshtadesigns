@@ -8,6 +8,7 @@ import { SiteNavigation } from './SiteNavigation';
 import { ConsultationForm } from './ConsultationForm';
 import { CONSULTATION_NOTE, PROCESS_STAGES, STORY_LINE, STORY_PHOTO_ALT, STORY_PHOTO_URL, STORY_PORTRAIT_LINES } from '../data/studioContent';
 import { SERVICES_HREF } from '../data/siteNavigation';
+import { createCeremonyScroll } from '../utils/ceremonyScroll';
 import './ShreshtaLanding.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -55,7 +56,7 @@ export const ShreshtaLandingPage: React.FC<ShreshtaLandingPageProps> = ({
     }, 0);
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (lenisRef.current) {
-      lenisRef.current.scrollTo(top, { duration: 2, immediate: immediate || reduce });
+      lenisRef.current.scrollTo(top, { duration: 2, immediate: immediate || reduce, force: true });
     } else {
       window.scrollTo({ top, behavior: immediate || reduce ? 'instant' : 'smooth' });
     }
@@ -249,7 +250,20 @@ export const ShreshtaLandingPage: React.FC<ShreshtaLandingPageProps> = ({
     }
 
     if (!still) {
-      const lenis = new Lenis({ lerp: 0.05, wheelMultiplier: 0.72, smoothWheel: true });
+      const showcase = root.querySelector<HTMLElement>('#services');
+      const showcaseStage = showcase?.querySelector<HTMLElement>('.services-sticky');
+      const lenis: Lenis = new Lenis({
+        lerp: 0.05,
+        wheelMultiplier: 0.72,
+        smoothWheel: true,
+        syncTouch: true,
+        touchInertiaExponent: 1.25,
+        virtualScroll: showcase && showcaseStage
+          ? createCeremonyScroll(showcase, showcaseStage, (target) => {
+            lenis.scrollTo(target, { duration: 1.1, easing: (progress) => 1 - (1 - progress) ** 3, lock: true });
+          })
+          : undefined,
+      });
       lenisRef.current = lenis;
       const tick = (time: number) => lenis.raf(time * 1000);
       gsap.ticker.add(tick);
@@ -626,7 +640,7 @@ export const ShreshtaLandingPage: React.FC<ShreshtaLandingPageProps> = ({
       <main id="main-content" tabIndex={-1}>
         {/* 1 · Our Story */}
         <section
-          className="reflect"
+          className="reflect overlap-sheet"
           id="our-story"
           data-nav="light"
           aria-label="Our story"
