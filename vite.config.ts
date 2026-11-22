@@ -10,7 +10,7 @@ export default defineConfig(() => {
     plugins: [
       react(),
       tailwindcss(),
-      // Deploy the existing public images and the PHP enquiry handler only.
+      // Copy the assets used by the production website.
       {
         name: 'copy-deployable-files',
         apply: 'build',
@@ -27,12 +27,6 @@ export default defineConfig(() => {
           copy('src/assets/images', 'src/assets/images', (source) =>
             !/^(?:mountain_sunset_vista_|serene_alpine_blue_vista_).+\.jpg$/.test(path.basename(source)),
           );
-          const htmlCache = process.env.SITE_STAGING === '1'
-            ? 'private, no-store'
-            : 'public, max-age=0, s-maxage=300';
-          const hostingRules = fs.readFileSync(path.join(import.meta.dirname, 'public/.htaccess'), 'utf8');
-          fs.writeFileSync(path.join(distDir, '.htaccess'), hostingRules.replace('__STATIC_HTML_CACHE__', htmlCache));
-          copy('public/api/consultation.php', 'api/consultation.php');
           copy('public/assets/aistudio/golden-pavilion.webp', 'assets/aistudio/golden-pavilion.webp');
           copy('public/assets/aistudio/golden-pavilion-portrait.webp', 'assets/aistudio/golden-pavilion-portrait.webp');
           copy('public/assets/aistudio/shreshta-logo.webp', 'assets/aistudio/shreshta-logo.webp');

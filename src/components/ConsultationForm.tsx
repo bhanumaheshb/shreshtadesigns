@@ -52,7 +52,7 @@ export function ConsultationForm({
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 20_000);
     try {
-      const response = await fetch('/api/consultation.php', {
+      const response = await fetch('/api/consultation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify(payload),
@@ -82,7 +82,7 @@ export function ConsultationForm({
       <p className="consultation-form__fallback">To enquire, email <a href="mailto:info@shreshtadesigns.com">info@shreshtadesigns.com</a> or use the WhatsApp button.</p>
       <form
         className={className ? `consultation-form ${className}` : 'consultation-form'}
-        action="/api/consultation.php"
+        action="/api/consultation"
         method="post"
         onChange={() => setFeedback(null)}
         onSubmit={submitConsultation}

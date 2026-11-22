@@ -68,6 +68,7 @@ for (const path of paths) {
 for (const [path, page] of htmlByPath) {
   for (const match of page.matchAll(/(?:href|src|action)="(\/(?!\/)[^"]+)"/g)) {
     const url = new URL(match[1], site);
+    if (url.pathname === '/api/consultation') continue;
     const target = htmlByPath.get(url.pathname);
     if (target) {
       if (url.hash) assert.ok(target.includes(`id="${url.hash.slice(1)}"`), `${path} links to ${match[1]}`);
@@ -86,9 +87,6 @@ for (const [path, page] of htmlByPath) {
 }
 
 const robots = await readFile(join(dir, 'robots.txt'), 'utf8');
-const hostingRules = await readFile(join(dir, '.htaccess'), 'utf8');
-assert.ok(!hostingRules.includes('__STATIC_HTML_CACHE__'));
-assert.ok(hostingRules.includes(staging ? 'private, no-store' : 'public, max-age=0, s-maxage=300'));
 for (const [path, page] of htmlByPath) {
   if (!path.startsWith('/album/')) continue;
   const previews = [...page.matchAll(/src="(\/src\/assets\/images\/albums\/[^"]+-preview\.webp)"/g)];
@@ -114,7 +112,6 @@ verifyBrand('/404.html', missing);
 assert.ok(missing.includes('noindex, nofollow'));
 assert.ok(missing.includes('Page unavailable'));
 const files = await readdir(dir, { recursive: true });
-assert.ok(files.includes('.htaccess'));
 const privateFiles = files.filter((file) => /(?:^|\/)(?:\.env|\.git|node_modules|\.prerender)|\.(?:gltf|glb|map)$/i.test(file));
 assert.deepEqual(privateFiles, []);
 console.log(`Verified ${paths.length} rendered routes, links, assets, metadata, schema, and crawler rules in ${dir}.`);
