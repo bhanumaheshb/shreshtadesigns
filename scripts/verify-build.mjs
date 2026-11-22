@@ -1,0 +1,120 @@
+import assert from 'node:assert/strict';
+import { access, readFile, readdir } from 'node:fs/promises';
+import { join } from 'node:path';
+
+const dir = process.argv[2] ?? 'dist';
+const site = 'https://shreshtadesigns.com';
+const brand = 'Shreshta Designs';
+const staging = dir === 'dist-staging';
+const paths = [
+  '/', '/services/', '/our-story/', '/experiences/', '/celebrations/', '/our-approach/', '/enquire/',
+  ...['engagement', 'sangeet', 'haldi', 'wedding', 'reception'].map((id) => `/album/${id}/`),
+];
+const titles = new Set();
+const descriptions = new Set();
+const htmlByPath = new Map();
+
+function verifyBrand(path, page) {
+  assert.doesNotMatch(page, /shreshtha|shrestha|rivaaz/i, `${path} has an outdated brand name`);
+  const title = page.match(/<title>([^<]+)<\/title>/)?.[1];
+  assert.ok(title?.endsWith(` | ${brand}`), `${path} page title`);
+  assert.ok(page.includes(`property="og:site_name" content="${brand}"`), `${path} social site name`);
+  assert.ok(page.includes(`property="og:title" content="${title}"`), `${path} Open Graph title`);
+  assert.ok(page.includes(`name="twitter:title" content="${title}"`), `${path} social card title`);
+
+  const href = page.match(/href="(https:\/\/wa\.me\/[^"]+)"/)?.[1];
+  assert.ok(href, `${path} WhatsApp link`);
+  const whatsapp = new URL(href.replaceAll('&#x27;', "'"));
+  assert.ok(whatsapp.searchParams.get('text')?.startsWith(`Hi ${brand}, `), `${path} WhatsApp greeting`);
+  return title;
+}
+
+for (const path of paths) {
+  const page = await readFile(join(dir, path.slice(1), 'index.html'), 'utf8');
+  htmlByPath.set(path, page);
+  assert.equal([...page.matchAll(/<h1\b/g)].length, 1, path);
+  assert.match(page, /<div id="root">\S/, path);
+  const title = verifyBrand(path, page);
+  const description = page.match(/<meta name="description" content="([^"]+)"/)?.[1];
+  assert.ok(title && !titles.has(title), `Unique title for ${path}`);
+  assert.ok(description && !descriptions.has(description), `Unique description for ${path}`);
+  titles.add(title);
+  descriptions.add(description);
+  assert.ok(page.includes(`property="og:url" content="${site}${path}"`));
+  if (staging) {
+    assert.ok(page.includes('content="noindex, nofollow"'));
+  } else {
+    assert.ok(page.includes(`rel="canonical" href="${site}${path}"`));
+    assert.ok(page.includes('content="index, follow'));
+  }
+
+  const schema = JSON.parse(page.match(/<script type="application\/ld\+json">(.*?)<\/script>/)?.[1]);
+  const schemaTypes = schema['@graph'].map((entry) => entry['@type']).sort();
+  assert.deepEqual(schemaTypes, path === '/services/'
+    ? ['Organization', 'Service', 'WebSite'] : ['Organization', 'WebSite']);
+  for (const type of ['Organization', 'WebSite']) {
+    const entity = schema['@graph'].find((entry) => entry['@type'] === type);
+    assert.equal(entity.name, brand, `${path} ${type} name`);
+    assert.equal(entity.url, site + '/', `${path} ${type} URL`);
+  }
+  const organization = schema['@graph'].find((entry) => entry['@type'] === 'Organization');
+  assert.equal(organization.areaServed.name, 'Hyderabad', `${path} service area`);
+  await access(join(dir, new URL(organization.logo).pathname));
+  const image = page.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
+  assert.ok(image?.startsWith(site));
+  await access(join(dir, new URL(image).pathname));
+}
+
+for (const [path, page] of htmlByPath) {
+  for (const match of page.matchAll(/(?:href|src|action)="(\/(?!\/)[^"]+)"/g)) {
+    const url = new URL(match[1], site);
+    const target = htmlByPath.get(url.pathname);
+    if (target) {
+      if (url.hash) assert.ok(target.includes(`id="${url.hash.slice(1)}"`), `${path} links to ${match[1]}`);
+    } else {
+      await access(join(dir, url.pathname));
+    }
+  }
+  for (const [, sources] of page.matchAll(/\bsrcset="([^"]+)"/gi)) {
+    for (const candidate of sources.split(',')) {
+      const [url] = candidate.trim().split(/\s+/, 1);
+      if (url.startsWith('/') && !url.startsWith('//')) {
+        await access(join(dir, new URL(url, site).pathname));
+      }
+    }
+  }
+}
+
+const robots = await readFile(join(dir, 'robots.txt'), 'utf8');
+const hostingRules = await readFile(join(dir, '.htaccess'), 'utf8');
+assert.ok(!hostingRules.includes('__STATIC_HTML_CACHE__'));
+assert.ok(hostingRules.includes(staging ? 'private, no-store' : 'public, max-age=0, s-maxage=300'));
+for (const [path, page] of htmlByPath) {
+  if (!path.startsWith('/album/')) continue;
+  const previews = [...page.matchAll(/src="(\/src\/assets\/images\/albums\/[^"]+-preview\.webp)"/g)];
+  assert.equal(previews.length, 8, path);
+  for (const [, preview] of previews) {
+    await access(join(dir, preview.replace('-preview.webp', '.webp')));
+  }
+}
+if (staging) {
+  assert.equal(robots, 'User-agent: *\nDisallow: /\n');
+  await assert.rejects(access(join(dir, 'sitemap.xml')));
+} else {
+  const sitemap = await readFile(join(dir, 'sitemap.xml'), 'utf8');
+  assert.deepEqual([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]),
+    paths.map((path) => site + path));
+  assert.match(robots, /User-agent: \*\nDisallow: \/api\//);
+  assert.match(robots, /User-agent: GPTBot\nDisallow: \/\n/);
+  assert.ok(robots.includes(`Sitemap: ${site}/sitemap.xml`));
+}
+
+const missing = await readFile(join(dir, '404.html'), 'utf8');
+verifyBrand('/404.html', missing);
+assert.ok(missing.includes('noindex, nofollow'));
+assert.ok(missing.includes('Page unavailable'));
+const files = await readdir(dir, { recursive: true });
+assert.ok(files.includes('.htaccess'));
+const privateFiles = files.filter((file) => /(?:^|\/)(?:\.env|\.git|node_modules|\.prerender)|\.(?:gltf|glb|map)$/i.test(file));
+assert.deepEqual(privateFiles, []);
+console.log(`Verified ${paths.length} rendered routes, links, assets, metadata, schema, and crawler rules in ${dir}.`);

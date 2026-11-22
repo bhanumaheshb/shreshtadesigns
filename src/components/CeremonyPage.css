@@ -1,0 +1,444 @@
+.ceremony-page,
+.ceremony-inquiry {
+  --ceremony-burgundy: #651f32;
+  --ceremony-ink: #371b0e;
+  --ceremony-muted: #674d40;
+  --ceremony-paper: #faf4ea;
+  --ceremony-rule: #dacebd;
+  --ceremony-surface: #f1e4d3;
+  --ceremony-backdrop: rgba(38, 16, 17, 0.84);
+  --ceremony-serif: "Bodoni Moda", Didot, "Times New Roman", serif;
+  --ceremony-gutter: clamp(20px, 5vw, 76px);
+}
+
+.ceremony-page {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--ceremony-paper);
+  color: var(--ceremony-ink);
+}
+
+.ceremony-page:focus {
+  outline: none;
+}
+
+.ceremony-page__header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--ceremony-paper);
+  border-bottom: 1px solid var(--ceremony-rule);
+}
+
+.ceremony-page__nav {
+  max-width: 1440px;
+  min-height: 72px;
+  margin-inline: auto;
+  padding-inline: var(--ceremony-gutter);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+}
+
+.ceremony-page__logo {
+  justify-self: start;
+}
+
+.ceremony-page__logo img {
+  display: block;
+  width: auto;
+  height: 40px;
+}
+
+.ceremony-page__chapters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px clamp(14px, 3vw, 38px);
+  color: var(--ceremony-muted);
+  font-size: 14px;
+}
+
+.ceremony-page__chapters a[aria-current="page"],
+.ceremony-page__chapters a:hover {
+  color: var(--ceremony-burgundy);
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}
+
+.ceremony-page__back,
+.ceremony-page__album-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 550;
+}
+
+.ceremony-page__back {
+  justify-self: end;
+}
+
+.ceremony-page__back:hover {
+  color: var(--ceremony-burgundy);
+}
+
+.ceremony-page__content {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: clamp(38px, 6vw, 96px) var(--ceremony-gutter);
+}
+
+.ceremony-page__intro,
+.ceremony-page__details {
+  display: grid;
+  align-items: center;
+  gap: clamp(28px, 5vw, 78px);
+  padding-bottom: clamp(44px, 6vw, 94px);
+  border-bottom: 1px solid var(--ceremony-rule);
+}
+
+.ceremony-page__intro {
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+}
+
+.ceremony-page h1,
+.ceremony-page h2,
+.ceremony-page h3,
+.services-page .ceremony-page__timeline h4,
+.ceremony-inquiry :is(h2, h3) {
+  font-family: var(--ceremony-serif);
+  color: var(--ceremony-burgundy);
+  font-weight: 500;
+  line-height: 1.06;
+}
+
+.ceremony-page h1,
+.services-page .services-page__title {
+  font-size: clamp(46px, 6.6vw, 102px);
+  letter-spacing: -0.035em;
+}
+
+.ceremony-page h2,
+.services-page :is(.ceremony-page__details, .ceremony-page__timeline) h3 {
+  font-size: clamp(36px, 4.5vw, 63px);
+  letter-spacing: -0.025em;
+}
+
+.ceremony-page h3,
+.services-page .ceremony-page__timeline h4 {
+  font-size: clamp(23px, 2.25vw, 31px);
+}
+
+.ceremony-page__subtitle {
+  margin-top: 20px;
+  font-size: 13px;
+  font-weight: 550;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.ceremony-page__lead {
+  max-width: 36ch;
+  margin-top: 16px;
+  color: var(--ceremony-muted);
+  font-size: clamp(16px, 1.6vw, 22px);
+  line-height: 1.6;
+}
+
+.ceremony-page__album-link {
+  margin-top: 26px;
+  padding: 13px 20px;
+  color: var(--ceremony-paper);
+  background: var(--ceremony-burgundy);
+}
+
+.ceremony-page__album-link:hover {
+  background: var(--ceremony-ink);
+}
+
+:is(.ceremony-page, .ceremony-inquiry) :is(a, button, input, textarea):focus-visible {
+  outline: 2px solid var(--ceremony-burgundy);
+  outline-offset: 5px;
+}
+
+.ceremony-page__photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: #ecd7bc;
+}
+
+.ceremony-page__photo figcaption {
+  margin-top: 10px;
+  color: var(--ceremony-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.ceremony-page__details {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  padding-top: clamp(44px, 6vw, 94px);
+}
+
+.ceremony-page__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 36px;
+  margin: 24px 0;
+}
+
+.ceremony-page__facts dt,
+.ceremony-page__timeline li p:first-child {
+  color: var(--ceremony-burgundy);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ceremony-page__facts dd {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.ceremony-page__highlights {
+  list-style: disc;
+  padding-left: 20px;
+  color: var(--ceremony-muted);
+}
+
+.ceremony-page__highlights li + li {
+  margin-top: 9px;
+}
+
+.ceremony-page__highlights li::marker {
+  color: var(--ceremony-burgundy);
+}
+
+.ceremony-page__timeline {
+  padding-top: clamp(44px, 6vw, 94px);
+}
+
+.ceremony-page__timeline ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 30px;
+}
+
+.ceremony-page__timeline li {
+  border-top: 1px solid var(--ceremony-rule);
+  padding-top: 16px;
+  color: var(--ceremony-muted);
+}
+
+.services-page .ceremony-page__timeline li h4 {
+  margin: 10px 0;
+}
+
+.services-page .services-page__nav {
+  grid-template-columns: 1fr auto;
+}
+
+.services-page__chapter + .services-page__chapter {
+  margin-top: clamp(44px, 7vw, 104px);
+  padding-top: clamp(38px, 6vw, 96px);
+  border-top: 1px solid var(--ceremony-rule);
+}
+
+@media (max-width: 719px) {
+  .ceremony-page__nav {
+    grid-template-columns: 1fr 1fr;
+    padding-block: 12px;
+    gap: 14px;
+  }
+
+  .ceremony-page__chapters {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    font-size: 13px;
+  }
+
+  .ceremony-page__intro,
+  .ceremony-page__details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ceremony-page__photo--detail {
+    grid-row: 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .ceremony-page__timeline ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.ceremony-album__actions {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: clamp(12px, 1.6vw, 22px);
+}
+
+.ceremony-album__enquire,
+.ceremony-inquiry__primary {
+  padding: 9px 15px;
+  background: var(--ceremony-burgundy);
+  color: var(--ceremony-paper);
+  font-size: 13px;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+.ceremony-album__enquire:hover,
+.ceremony-inquiry__primary:hover {
+  background: var(--ceremony-ink);
+}
+
+.ceremony-album__intro {
+  margin-bottom: clamp(28px, 4vw, 56px);
+  text-align: center;
+}
+
+.ceremony-album__intro .ceremony-page__lead {
+  max-width: 58ch;
+  margin-inline: auto;
+}
+
+.ceremony-album__footer {
+  border-top: 1px solid var(--ceremony-rule);
+}
+
+.ceremony-album__pager {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: 28px var(--ceremony-gutter);
+}
+
+.ceremony-album__pager a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: start;
+  color: var(--ceremony-burgundy);
+  font-size: 14px;
+  font-weight: 550;
+}
+
+.ceremony-album__pager a:last-child {
+  justify-self: end;
+}
+
+.ceremony-album__pager a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.ceremony-album__pager p {
+  color: var(--ceremony-muted);
+  text-align: center;
+  font-size: 12px;
+}
+
+.ceremony-album__icon-button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  background: var(--ceremony-paper);
+  color: var(--ceremony-burgundy);
+  cursor: pointer;
+}
+
+.ceremony-album__icon-button:hover {
+  background: var(--ceremony-surface);
+}
+
+.ceremony-inquiry__field {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 14px;
+  border: 1px solid var(--ceremony-rule);
+  background: var(--ceremony-paper);
+  font-size: 14px;
+}
+
+.ceremony-inquiry__field::placeholder {
+  color: var(--ceremony-muted);
+}
+
+@media (min-width: 720px) and (max-width: 980px) {
+  .ceremony-album__nav {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 12px;
+  }
+
+  .ceremony-album__nav .ceremony-page__chapters {
+    font-size: 12px;
+    gap: 8px 12px;
+  }
+}
+
+@media (max-width: 719px) {
+  .ceremony-album__nav {
+    grid-template-columns: 1fr auto;
+    padding-block: 12px;
+    gap: 14px;
+  }
+
+  .ceremony-album__nav .ceremony-page__chapters {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-size: 13px;
+  }
+
+  .ceremony-album__nav .ceremony-page__logo img {
+    height: 34px;
+  }
+}
+
+@media (max-width: 600px) {
+  .ceremony-album__intro h1 {
+    font-size: clamp(34px, 8vw, 46px);
+  }
+
+  .ceremony-album__pager {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ceremony-album__pager p {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+.services-page__chapter {
+  scroll-margin-top: 80px;
+}
+
+.ceremony-inquiry__dialog {
+  margin: auto;
+  width: min(calc(100% - 32px), 42rem);
+  max-height: 90svh;
+  padding: clamp(20px, 4vw, 32px);
+  overflow: auto;
+  background: var(--ceremony-paper);
+  color: var(--ceremony-ink);
+}
+
+.ceremony-inquiry__dialog::backdrop {
+  background: var(--ceremony-backdrop);
+}

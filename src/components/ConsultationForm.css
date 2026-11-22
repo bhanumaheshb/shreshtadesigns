@@ -1,0 +1,134 @@
+.consultation-form {
+  --consultation-ink: var(--ceremony-ink, #371b0e);
+  --consultation-label: var(--ceremony-burgundy, #651f32);
+  --consultation-muted: var(--ceremony-muted, #674d40);
+  --consultation-rule: var(--ceremony-rule, #dacebd);
+  --consultation-accent: var(--ceremony-burgundy, #651f32);
+  --consultation-button-ink: var(--ceremony-paper, #faf4ea);
+  --consultation-button-background: var(--consultation-accent);
+
+  color: var(--consultation-ink);
+}
+
+.consultation-form__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(18px, 2.3vw, 30px) clamp(16px, 2.2vw, 28px);
+}
+
+.consultation-form__wide {
+  grid-column: 1 / -1;
+}
+
+.consultation-form label,
+.consultation-form__guest-picker {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+}
+
+.consultation-form label > span {
+  color: var(--consultation-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.consultation-form small {
+  margin-left: 4px;
+  color: var(--consultation-muted);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.consultation-form :is(input:not([type="range"]), select, textarea) {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid var(--consultation-rule);
+  border-radius: 0;
+  background: transparent;
+  color: var(--consultation-ink);
+  font: 400 16px / 1.4 "Geist", Inter, system-ui, sans-serif;
+}
+
+.consultation-form textarea {
+  resize: vertical;
+}
+
+.consultation-form :is(input, textarea)::placeholder {
+  color: var(--consultation-muted);
+  opacity: 1;
+}
+
+.consultation-form input[type="range"] {
+  width: 100%;
+  min-height: 24px;
+  accent-color: var(--consultation-accent);
+  cursor: pointer;
+}
+
+.consultation-form :is(input, select, textarea, button):focus-visible {
+  outline: 2px solid var(--consultation-accent);
+  outline-offset: 3px;
+}
+
+.consultation-form button {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 13px 20px;
+  border: 1px solid var(--consultation-accent);
+  background: var(--consultation-button-background);
+  color: var(--consultation-button-ink);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.consultation-form button:hover {
+  background: var(--consultation-ink);
+  color: var(--consultation-button-ink);
+}
+
+.consultation-form button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.consultation-form__feedback {
+  margin-top: 14px;
+  color: var(--consultation-muted);
+  font-size: 13px;
+}
+
+@media (max-width: 580px) {
+  .consultation-form__fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.consultation-form__privacy {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.consultation-form__fallback {
+  display: none;
+}
+
+@media (scripting: none) {
+  .consultation-form {
+    display: none;
+  }
+
+  .consultation-form__fallback {
+    display: block;
+  }
+}

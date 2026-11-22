@@ -1,0 +1,363 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #ffffff;
+  --color-foreground: #371B0E;
+  --color-primary: #371B0E;
+  --color-primary-foreground: #fafafa;
+  --color-muted: #FAF4EA;
+  --color-muted-foreground: #735B4B;
+  --color-border: #DACEBD;
+}
+
+:root {
+  --u: 1px;
+  --n: clamp(0.5px, min(100vw / 1440, 100vh / 900), 1.3px);
+  --fy: 0px;
+  --services-cream: #f4e2c6;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  font-family: "Geist", Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html.is-overlay-open {
+  overflow: hidden;
+}
+
+.whatsapp-link {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 55;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid rgba(250, 244, 234, 0.75);
+  border-radius: 50%;
+  background: #087f5b;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(55, 27, 14, 0.18);
+}
+
+.whatsapp-link:hover {
+  background: #05674a;
+}
+
+.whatsapp-link:focus-visible {
+  outline: 2px solid #651f32;
+  outline-offset: 3px;
+}
+
+#root:has([aria-modal="true"]) .whatsapp-link {
+  display: none;
+}
+
+.shreshta-landing .services-showcase {
+  --services-viewport: max(480px, 100svh);
+  --service-step: clamp(260px, 56svh, 560px);
+  height: calc(var(--services-viewport) + var(--service-count) * var(--service-step));
+  background-color: var(--services-cream);
+  scroll-margin-top: 0;
+}
+
+.services-sticky {
+  position: sticky;
+  top: 0;
+  height: var(--services-viewport);
+  overflow: hidden;
+}
+
+.hero-stage {
+  position: absolute;
+  inset: var(--nav) 0 0;
+  overflow: hidden;
+  background-color: var(--services-cream);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-color: var(--services-cream);
+  will-change: clip-path;
+}
+
+.hero-frame {
+  position: absolute;
+  width: calc(1440 * var(--u));
+  height: calc(900 * var(--u));
+  left: calc(50% - 720 * var(--u));
+  top: calc(50% - 450 * var(--u) + var(--fy));
+  pointer-events: none;
+}
+
+.hero-layer {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.hero-word {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Bodoni Moda", Didot, "Times New Roman", serif;
+  font-variation-settings: "opsz" 96;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  color: #754a34;
+  text-align: center;
+  user-select: none;
+}
+
+.hero-shadow-ellipse {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(60, 35, 20, 0.22), transparent);
+  filter: blur(calc(4 * var(--u)));
+}
+
+.hero-centerpiece-wrap {
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.hero-centerpiece-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 calc(10 * var(--u)) calc(18 * var(--u)) rgba(50, 30, 16, 0.14));
+}
+
+.hero-motif-outer {
+  position: absolute;
+}
+
+.hero-motif-inner {
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+  animation-name: motif-bob;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+.hero-motif-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 calc(8 * var(--u)) calc(14 * var(--u)) rgba(50, 30, 16, 0.14));
+}
+
+.hero-layer--corner {
+  filter: blur(calc(9 * var(--u)));
+}
+
+@keyframes motif-bob {
+  from {
+    transform: translateY(calc(-7 * var(--u))) rotate(calc(var(--rot, 0deg) - 3deg));
+  }
+  to {
+    transform: translateY(calc(7 * var(--u))) rotate(calc(var(--rot, 0deg) + 3deg));
+  }
+}
+
+/* Showcase controls */
+.hero-ui {
+  position: absolute;
+  inset: var(--nav) 0 0;
+  z-index: 10;
+  pointer-events: none;
+  color: var(--color-foreground);
+}
+
+.hero-ui-text {
+  text-shadow: 0 1px 6px rgba(90, 70, 40, 0.18);
+}
+
+.hero-ui button,
+.hero-ui a {
+  pointer-events: auto;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+}
+
+.hero-ui button:focus-visible,
+.hero-ui a:focus-visible {
+  box-shadow: 0 0 0 2px currentColor;
+  border-radius: 4px;
+}
+
+.hero-header {
+  position: absolute;
+  left: calc(50 * var(--n));
+  right: calc(50 * var(--n));
+  top: calc(26 * var(--n));
+  height: calc(50 * var(--n));
+  display: flex;
+  align-items: center;
+}
+
+.hero-tabs {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: calc(54 * var(--n));
+}
+
+.hero-tab {
+  padding: calc(6 * var(--n)) 0;
+  font-size: calc(21 * var(--n));
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  flex-shrink: 0;
+  opacity: 0.9;
+  transition: opacity 180ms ease;
+}
+
+.hero-tab[aria-current="true"] {
+  opacity: 1;
+}
+
+.hero-tab-underline {
+  position: absolute;
+  left: 0;
+  bottom: calc(-2 * var(--n));
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  box-shadow: 0 1px 6px rgba(90, 70, 40, 0.18);
+  pointer-events: none;
+  transition:
+    transform 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+    width 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.hero-cta {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(36 * var(--n));
+  padding: calc(10 * var(--n)) calc(16 * var(--n));
+  font-family: "Geist", Inter, system-ui, sans-serif;
+  font-size: calc(19 * var(--n));
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: opacity 180ms ease;
+}
+
+.hero-cta:hover {
+  opacity: 0.84;
+}
+
+/* Compact layout for phones */
+.is-mobile .hero-header {
+  left: 20px;
+  right: 20px;
+  top: 16px;
+  height: 40px;
+}
+
+.is-mobile .hero-tabs {
+  top: 52px;
+  gap: clamp(10px, 3vw, 18px);
+}
+
+.is-mobile .hero-tab {
+  font-size: clamp(11.5px, 3.1vw, 14px);
+  padding: 6px 0;
+}
+
+.is-mobile .hero-tab-underline {
+  bottom: -2px;
+}
+
+.is-mobile .hero-cta {
+  font-size: 15px;
+  bottom: 22px;
+  padding: 10px 16px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-motif-inner {
+    animation: none !important;
+    transform: rotate(var(--rot, 0deg));
+  }
+
+  .hero-tab-underline {
+    transition: none !important;
+  }
+
+}
+
+
+.missing-page {
+  min-height: 100vh;
+  padding: clamp(24px, 8vw, 100px);
+  background: #faf4ea;
+  color: #371b0e;
+}
+
+.missing-page h1 {
+  font-family: "Bodoni Moda", Didot, serif;
+  font-size: clamp(2rem, 6vw, 4rem);
+}
+
+.missing-page a {
+  text-decoration: underline;
+}
+
+.hero-slide[aria-hidden="true"]:not([style]) {
+  display: none;
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 60;
+  padding: 10px 16px;
+  background: #faf4ea;
+  color: #651f32;
+  transform: translateY(calc(-100% - 12px));
+}
+
+.skip-link:focus {
+  transform: none;
+  outline: 2px solid currentColor;
+}
